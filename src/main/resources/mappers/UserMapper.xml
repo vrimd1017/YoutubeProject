@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0 //EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="myapp.mappers.UserMapper">
+<select id="userlogin" parameterType="UserVO" resultType="UserVO">
+	SELECT * FROM USERTBL WHERE USER_EMAIL = #{userEmail} AND USER_PASSWORD = #{userPassword};
+</select>
+
+<update id="updateCode" parameterType="UserVO">
+	UPDATE USERTBL SET USER_CODE=#{userCode} WHERE USER_EMAIL=#{userEmail};
+</update>
+<insert id="registUser" parameterType="UserVO">
+	INSERT INTO USERTBL VALUES(#{userEmail}, #{userPassword}, NULL, DEFAULT, #{userCode});
+</insert>
+<update id="updateAuth" parameterType="UserVO">
+	UPDATE USERTBL SET USER_AUTH = 1 WHERE USER_EMAIL=#{userEmail};
+</update>
+</mapper>

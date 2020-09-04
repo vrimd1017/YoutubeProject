@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0 //EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="myapp.mappers.CategoryMapper">
+<select id="Categorylist" resultType="CategoryVO">
+	SELECT * FROM CATEGORYTBL;
+</select>
+<select id="selectCode" parameterType="CategoryVO" resultType="CategoryVO">
+	SELECT CATEGORY_CODE FROM CATEGORYTBL WHERE USER_EMAIL=#{userEmail} AND CATEGORY_NAME=#{categoryName};
+</select>
+<insert id="insertOneCategory" parameterType="CategoryVO">
+	INSERT INTO CATEGORYTBL VALUES (NULL, 
+	<choose>
+		<when test="categoryParents == 0">
+			null
+		</when>
+		<otherwise>
+			#{categoryParents}
+		</otherwise>
+	</choose>
+	, #{userEmail}, #{categoryName});
+</insert>
+<select id="getUserCategoryList" parameterType="CategoryVO" resultType="CategoryArrObject">
+	SELECT CATEGORY_CODE, CATEGORY_NAME, CATEGORY_PARENTS FROM CATEGORYTBL WHERE USER_EMAIL=#{userEmail} AND CATEGORY_PARENTS IS NULL;
+</select>
+<select id="getUserSubCategoryList" parameterType="CategoryArrObject" resultType="CategoryObject">
+	SELECT CATEGORY_CODE, CATEGORY_NAME FROM CATEGORYTBL WHERE USER_EMAIL=#{userEmail} AND CATEGORY_PARENTS=#{categoryCode};
+</select>
+<delete id="deleteOneCategory" parameterType="CategoryVO">
+	DELETE FROM CATEGORYTBL WHERE USER_EMAIL=#{userEmail} AND CATEGORY_CODE = #{categoryCode};
+</delete>
+
+<update id="updateCategory" parameterType="CategoryVO">
+	UPDATE CATEGORYTBL SET CATEGORY_NAME=#{categoryName} WHERE USER_EMAIL=#{userEmail} AND CATEGORY_CODE=#{categoryCode};
+</update>
+</mapper>
+

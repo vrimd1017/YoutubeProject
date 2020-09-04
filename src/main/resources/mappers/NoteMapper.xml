@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0 //EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="myapp.mappers.NoteMapper">
+<select id="selectCategory" parameterType="CategoryVO" resultType="NoteVO" >
+SELECT NOTE_CODE, NOTE_TITLE, NOTE_CONTENT, NOTE_UPDATETIME, NOTE_URL, NOTE_THUMBNAIL, NOTE_CATEGORY
+FROM VIDEONOTETBL
+WHERE USER_EMAIL = #{userEmail} AND NOTE_CATEGORY IN (SELECT CATEGORY_CODE FROM CATEGORYTBL WHERE CATEGORY_PARENTS = #{categoryCode} OR CATEGORY_CODE = #{categoryCode});
+</select>
+
+<insert id="insertNote" parameterType="NoteVO">
+	INSERT INTO VIDEONOTETBL VALUES(NULL, #{noteTitle},
+	 <choose>
+		<when test="noteContent == null">
+			null
+		</when>
+		<otherwise>
+			#{noteContent}
+		</otherwise>
+	</choose>
+	 , NOW(), #{noteUrl}, #{noteCategory}, #{noteThumbnail}, #{userEmail});
+</insert>
+<delete id="deleteNote" parameterType="NoteVO">
+	DELETE FROM VIDEONOTETBL WHERE NOTE_CODE=#{noteCode};
+</delete>
+<update id="updateNote" parameterType="NoteVO">
+	UPDATE VIDEONOTETBL SET NOTE_TITLE=#{noteTitle}, NOTE_CONTENT=#{noteContent}, NOTE_UPDATETIME=NOW() WHERE NOTE_CODE=#{noteCode};
+</update>
+</mapper>
